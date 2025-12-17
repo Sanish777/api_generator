@@ -1,0 +1,27 @@
+{
+  "name": "api-generator",
+  "version": "1.0.0",
+  "description": "Generate MySQL stored procedures and JavaScript API functions from natural language prompts",
+  "main": "index.js",
+  "bin": {
+    "api-generator": "./cli.js"
+  },
+  "scripts": {
+    "start": "node cli.js"
+  },
+  "keywords": [
+    "api",
+    "generator",
+    "mysql",
+    "stored-procedures"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "dotenv": "^16.3.1",
+    "mysql2": "^3.6.5",
+    "openai": "^4.20.1"
+  }
+}
+
