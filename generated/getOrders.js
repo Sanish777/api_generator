@@ -1,7 +1,7 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
-async function getPerfumes(page = 1, limit = 10) {
+async function getOrders(page = 1, limit = 10) {
     let connection;
     try {
         connection = await mysql.createConnection({
@@ -12,24 +12,23 @@ async function getPerfumes(page = 1, limit = 10) {
             port: process.env.DB_PORT
         });
 
-        // Call stored procedure
-        const [results] = await connection.execute('CALL sp_get_perfumes(?, ?, @total)', [page, limit]);
+        const [results] = await connection.execute('CALL sp_get_orders(?, ?, @total)', [page, limit]);
         const [totalResult] = await connection.execute('SELECT @total as total');
-        const data = results[0]; // first result set from stored procedure
         const total = totalResult[0].total;
+        const data = results[0];
 
-        return {
-            success: true,
-            data: {
-                perfumes: data,
-                pagination: {
-                    page,
-                    limit,
-                    total,
-                    totalPages: Math.ceil(total / limit)
-                }
-            },
-            error: null
+        return { 
+            success: true, 
+            data: { 
+                orders: data, 
+                pagination: { 
+                    page, 
+                    limit, 
+                    total, 
+                    totalPages: Math.ceil(total / limit) 
+                } 
+            }, 
+            error: null 
         };
     } catch (error) {
         return { success: false, data: null, error: error.message };
@@ -38,4 +37,4 @@ async function getPerfumes(page = 1, limit = 10) {
     }
 }
 
-module.exports = { getPerfumes };
+module.exports = { getOrders };

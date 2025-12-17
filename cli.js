@@ -19,8 +19,8 @@ program
       process.exit(1);
     }
 
-    try {
       await generate(options.prompt);
+    try {
       console.log('✓ Generation complete! Check the /generated directory.');
     } catch (error) {
       console.error('Error:', error.message);

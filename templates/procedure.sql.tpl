@@ -13,7 +13,15 @@ BEGIN
         RESIGNAL;
     END;
 
-    -- Calculate offset for pagination
+    -- Validate parameters
+    IF p_page < 1 THEN
+        SET p_page = 1;
+    END IF;
+    IF p_limit < 1 THEN
+        SET p_limit = 10;
+    END IF;
+
+    -- Calculate offset for pagination (must be calculated in variable, not in LIMIT clause)
     SET v_offset = (p_page - 1) * p_limit;
 
     -- Get total count of records

@@ -151,12 +151,15 @@ Generate code based on the user's prompt. Return ONLY valid JSON in this exact f
 CRITICAL SQL REQUIREMENTS:
 - Parameter names MUST use "p_" prefix: p_page, p_limit (NOT "page" or "limit" - these are reserved keywords)
 - Use OUT parameter for total count: OUT p_total INT
-- Use p_limit and p_page in LIMIT clause: LIMIT p_limit OFFSET (p_page - 1) * p_limit
 - Procedure signature: CREATE PROCEDURE sp_get_<table>(IN p_page INT, IN p_limit INT, OUT p_total INT)
+- MUST declare variable for offset: DECLARE v_offset INT DEFAULT 0;
+- MUST calculate offset in variable: SET v_offset = (p_page - 1) * p_limit;
+- NEVER use calculations directly in LIMIT clause - always use variable: LIMIT p_limit OFFSET v_offset
+- Include parameter validation: IF p_page < 1 THEN SET p_page = 1; END IF; (same for p_limit)
 - Get total count: SELECT COUNT(*) INTO p_total FROM <table>
-- Return paginated data: SELECT ... FROM <table> ORDER BY <primary_key> LIMIT p_limit OFFSET (p_page - 1) * p_limit
+- Return paginated data: SELECT ... FROM <table> ORDER BY <primary_key> LIMIT p_limit OFFSET v_offset
 - Use DELIMITER $$ and DELIMITER ; for procedure definition
-- Include proper error handling with DECLARE EXIT HANDLER
+- Include proper error handling with DECLARE EXIT HANDLER FOR SQLEXCEPTION
 
 JavaScript Requirements (MUST follow this exact pattern):
 - Import: const mysql = require('mysql2/promise'); require('dotenv').config();

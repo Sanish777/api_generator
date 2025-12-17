@@ -1,5 +1,5 @@
 DELIMITER $$
-CREATE PROCEDURE sp_get_perfumes(IN p_page INT, IN p_limit INT, OUT p_total INT)
+CREATE PROCEDURE sp_get_orders(IN p_page INT, IN p_limit INT, OUT p_total INT)
 BEGIN
     DECLARE v_offset INT DEFAULT 0;
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -16,11 +16,11 @@ BEGIN
     SET v_offset = (p_page - 1) * p_limit;
 
     -- Get total count
-    SELECT COUNT(*) INTO p_total FROM perfumes;
+    SELECT COUNT(*) INTO p_total FROM orders;
 
     -- Return paginated data
-    SELECT id, title, description, published, stock, image, category, label, occasion, size 
-    FROM perfumes 
+    SELECT id, Order_id, order_date, payment_status, status, Price, User_id, cart 
+    FROM orders 
     ORDER BY id 
     LIMIT p_limit OFFSET v_offset;
 END $$
